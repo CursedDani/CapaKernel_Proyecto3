@@ -1,5 +1,8 @@
 obj-m += kmod_secure.o
 
+# El parcial exige "clean build": cualquier warning rompe la compilacion
+ccflags-y += -Wall -Wextra -Werror -Wno-unused-parameter
+
 KDIR ?= /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
 

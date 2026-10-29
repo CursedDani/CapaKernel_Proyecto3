@@ -1,3 +1,8 @@
+> **Nota:** este es el **borrador inicial** del informe. La versión verificada contra el kernel real (con correcciones
+> explícitas a este texto, errores/alucinaciones reales y mediciones) está en [`docs/`](./docs/) — ver
+> [`RESUMEN_IMPLEMENTACION.md`](./RESUMEN_IMPLEMENTACION.md). Las respuestas de la Parte I de este archivo tienen imprecisiones
+> corregidas en [`docs/PARTE_I_respuestas.md`](./docs/PARTE_I_respuestas.md) (tabla C1–C8).
+
 # Evaluación Parcial Práctica-Teórica (25%)
 ## Seguridad de Archivos mediante Intervención en la Capa del Kernel y Mapeo de Memoria (`mmap`)
 

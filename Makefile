@@ -11,9 +11,11 @@ SUBDIRS = paso1_io_clasico \
           paso6_demand_paging_fault \
           paso7_ipc_ringbuffer \
           paso8_secure_driver \
+          paso9_kprobe_auditor \
+          paso10_secure_mmap \
           herramientas
 
-.PHONY: all clean run run-paso1 run-paso2 run-benchmark run-ipc run-inspector run-secure load-modules unload-modules help
+.PHONY: all clean run run-paso1 run-paso2 run-benchmark run-ipc run-inspector run-secure run-vm load-modules unload-modules help
 
 all:
 	@echo "=========================================================="
@@ -59,6 +61,10 @@ run-inspector:
 run-secure:
 	$(MAKE) -C paso8_secure_driver test
 
+# Pruebas del Parcial dentro de una VM QEMU/KVM desechable (sin root, sin riesgo de panic en el host)
+run-vm:
+	./vm/run_vm_tests.sh all
+
 load-modules:
 	./scripts/load_modules.sh
 
@@ -75,5 +81,6 @@ help:
 	@echo "  make run-ipc       - Ejecuta la comunicacion Inter-Procesos Zero-Copy (13M msg/s)"
 	@echo "  make run-inspector - Inspecciona las tablas de paginas y fallos con pagemap"
 	@echo "  make run-secure    - Ejecuta la prueba del driver seguro (control de acceso + integridad + auditoria)"
+	@echo "  make run-vm        - Ejecuta TODAS las pruebas del parcial en una VM QEMU/KVM (ver vm/ y RESUMEN_IMPLEMENTACION.md)"
 	@echo "  make load-modules  - Compila y carga los drivers kmod_copy_user, kmod_mmap, kmod_demand_paging y kmod_secure"
 	@echo "  make unload-modules- Descarga los modulos del kernel"

@@ -1,0 +1,8 @@
+fecha: 2026-10-28T20:14:23-05:00
+host kernel: 7.2.10-200.fc44.x86_64  (Fedora, sin kernel-devel ni root)
+kernel de la VM (QEMU/KVM): 6.19.10-300.fc44.x86_64 (/boot/vmlinuz del host)
+headers de compilacion: kernel-devel 6.19.10-300.fc44 y 7.2.13-200.fc44 (extraidos sin root con rpm2cpio)
+gcc: gcc (GCC) 16.2.1 20260819 (Red Hat 16.2.1-2)
+qemu: QEMU emulator version 10.2.2 (qemu-10.2.2-1.fc44)
+CPU:  AMD Ryzen 7 8840HS w/ Radeon 780M Graphics
+VM: -smp 2 -m 512 -cpu host -enable-kvm

@@ -1,0 +1,14 @@
+# <binario> <uid> <gid>      (orden de ejecucion; test_tamper va ultimo: la manipulacion es persistente)
+# uid 1000 = UID autorizado (modulo cargado con allowed_uid=1000)
+# uid 65534 = nobody (NO autorizado)
+# uid 0 = root (autorizado por CAP_SYS_ADMIN)
+test_authorized     1000 1000
+test_unauthorized   65534 65534
+test_fd_inherit     0 0
+test_prot_exec      1000 1000
+test_private_map    1000 1000
+test_oob_pgoff      1000 1000
+test_ro_write       1000 1000
+test_race_madvise   1000 1000
+test_crypto_rest    0 0
+test_tamper         0 0

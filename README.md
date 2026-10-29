@@ -11,14 +11,23 @@ Este repositorio contiene, además del laboratorio base (Pasos 1-7), la solució
 **Parcial 25%: Seguridad de Archivos mediante Intervención en la Capa del Kernel y Mapeo de
 Memoria (`mmap`)**.
 
-- **Informe completo (respuestas teóricas, estrategia con IA, arquitectura y argumentación):**
-  [`Parcial_CapaKernel_Solucion.md`](./Parcial_CapaKernel_Solucion.md)
-- **Componente A — Control de acceso, integridad y auditoría** (`paso8_secure_driver/`): **completo**.
-  Driver de caracteres con control de acceso por UID/capability, verificación de integridad
-  (CRC32) y auditoría de *page faults*, más su cliente de prueba y script de PoC de acceso
-  no autorizado.
-- **Componente B — Auditoría transversal con `kprobes` + benchmarking** (`paso9_kprobe_auditor/`):
-  **pendiente**.
+- **Resumen de lo implementado y paso a paso para ejecutarlo todo:** [`RESUMEN_IMPLEMENTACION.md`](./RESUMEN_IMPLEMENTACION.md)
+- **Informe del parcial (3 partes) y evidencia real:** [`docs/`](./docs/) —
+  [`PARTE_I_respuestas.md`](./docs/PARTE_I_respuestas.md) (10 preguntas, con correcciones al borrador),
+  [`PARTE_II_estrategia_IA.md`](./docs/PARTE_II_estrategia_IA.md) (flujo con IA, errores/alucinaciones **reales**, arquitectura, trade-offs medidos),
+  [`PARTE_III_implementacion_resultados.md`](./docs/PARTE_III_implementacion_resultados.md) (justificación kernel vs usuario, overhead, limitaciones),
+  [`docs/evidencia/`](./docs/evidencia/) (logs de las ejecuciones en VM).
+  El borrador inicial se conserva en [`Parcial_CapaKernel_Solucion.md`](./Parcial_CapaKernel_Solucion.md).
+- **Componente A — Control de acceso, integridad y auditoría** (`paso8_secure_driver/`): driver con ACL por UID,
+  CRC32 y auditoría de *page faults* (corregido para compilar sin warnings).
+- **Componente B — Auditoría transversal con `kprobes`** (`paso9_kprobe_auditor/`): **completo**. Observa el `mmap()`
+  de todo el sistema (`security_mmap_file`) y marca patrones anómalos (W+X, escritura compartida sobre rutas sensibles, exec sobre dispositivos).
+- **Solución endurecida — Bóveda segura** (`paso10_secure_mmap/`): `/dev/secure_vault` con control de acceso re-verificado,
+  W^X, solo `MAP_SHARED`, límites de `pgoff`, aislamiento de VMA, **cifrado AES-CTR en reposo + integridad HMAC-SHA256**,
+  `page_mkwrite` y auditoría; con 10 programas de ataque/defensa, benchmark y verificación de afirmaciones de IA.
+- **Ejecución segura sin root:** `vm/run_vm_tests.sh all` (o `make run-vm`, o `./run.sh vm`) arranca una VM QEMU/KVM desechable.
+
+> ⚠ kbuild **no soporta espacios en la ruta**; clone/copie el repo a una ruta sin espacios para `make` (el script de VM lo resuelve solo).
 
 ---
 
@@ -149,6 +158,19 @@ CapaKernel/
 │   ├── test_secure.c              # Cliente que ejercita las tres defensas
 │   ├── attack_unauthorized_uid.sh # PoC de acceso no autorizado exigido por el parcial (Sección 4.1)
 │   └── Makefile
+├── paso9_kprobe_auditor/          # Paso 9 (Parcial, Componente B): auditor global de mmap() con kprobes
+│   ├── kmod_auditor.c             # kprobe sobre security_mmap_file + reglas de anomalía + /proc/mmap_audit
+│   ├── mmap_probe.c               # mmaps sospechosos controlados para la demo
+│   └── Makefile
+├── paso10_secure_mmap/            # Paso 10 (Parcial): bóveda segura /dev/secure_vault
+│   ├── kmod_secure_mmap.c         # open / mmap / fault / page_mkwrite / close / ioctl
+│   ├── secure_policy.h, secure_crypto.{c,h}, secure_audit.{c,h}, secure_vault_uapi.h
+│   ├── tests/                     # 10 programas de ataque/defensa + attack_matrix + run_tests.sh
+│   ├── bench/                     # bench_mmap_latency.c, run_overhead.sh (perf/strace/ftrace)
+│   └── verificacion_ia/           # comprobación empírica de afirmaciones típicas de IA
+├── vm/                            # Harness QEMU/KVM: run_vm_tests.sh, check_compat.sh, mutation_test.sh, bench_repeat.sh
+├── docs/                          # Informe (Partes I-III) + evidencia/ (logs reales)
+├── RESUMEN_IMPLEMENTACION.md      # Resumen + paso a paso para ejecutar todo
 ├── herramientas/                  # Herramientas de diagnóstico didáctico
 │   ├── vma_inspector.c            # Inspección de /proc/self/pagemap y bits PTE
 │   └── Makefile

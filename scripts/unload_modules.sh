@@ -14,6 +14,18 @@ NC='\033[0m'
 
 echo -e "${BLUE}${BOLD}=== DESCARGANDO MÓDULOS DE KERNEL ===${NC}"
 
+if lsmod | grep -q "secure_vault"; then
+    echo -e "${YELLOW}[-] Descargando secure_vault...${NC}"
+    sudo rmmod secure_vault
+    echo -e "${GREEN}[+] secure_vault descargado.${NC}"
+fi
+
+if lsmod | grep -q "kmod_auditor"; then
+    echo -e "${YELLOW}[-] Descargando kmod_auditor...${NC}"
+    sudo rmmod kmod_auditor
+    echo -e "${GREEN}[+] kmod_auditor descargado.${NC}"
+fi
+
 if lsmod | grep -q "kmod_secure"; then
     echo -e "${YELLOW}[-] Descargando kmod_secure...${NC}"
     sudo rmmod kmod_secure

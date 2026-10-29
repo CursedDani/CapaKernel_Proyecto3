@@ -1,0 +1,5 @@
+# Resumen de ftrace (function_graph) de vault_fault - generado de docs/evidencia/trace.log
+# NOTA: function_graph instrumenta cada funcion y INFLA las duraciones; sirve para ver el camino, no el costo real.
+faults trazados: 24
+con descifrado AES-CTR + HMAC-SHA256 (1er acceso a la pagina en la sesion): n=8 media=49.1 us min=45.9 max=61.1
+pagina ya cargada en la sesion (solo get_page + mapeo):                    n=16 media=2.71 us min=2.54 max=3.39

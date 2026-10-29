@@ -41,6 +41,7 @@
  */
 
 #include <linux/init.h>
+#include <linux/version.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
@@ -316,8 +317,8 @@ static int __init secure_init(void)
 	mutex_lock(&secure_lock);
 	baseline_crc = crc32_le(0, kernel_buffer, BUFFER_SIZE);
 	mutex_unlock(&secure_lock);
-	pr_info("[kmod_secure] CRC32 base calculado: 0x%08x (buffer de %d bytes)\n",
-		baseline_crc, BUFFER_SIZE);
+	pr_info("[kmod_secure] CRC32 base calculado: 0x%08x (buffer de %lu bytes)\n",
+		baseline_crc, (unsigned long)BUFFER_SIZE);
 
 	ret = alloc_chrdev_region(&dev_num, 0, 1, DEVICE_NAME);
 	if (ret < 0)
@@ -330,7 +331,12 @@ static int __init secure_init(void)
 	if (ret < 0)
 		goto err_unregister;
 
+	/* class_create(): 2 args hasta Linux 6.3, 1 arg desde 6.4 */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 4, 0)
 	secure_class = class_create(CLASS_NAME);
+#else
+	secure_class = class_create(THIS_MODULE, CLASS_NAME);
+#endif
 	if (IS_ERR(secure_class)) {
 		ret = PTR_ERR(secure_class);
 		goto err_cdev_del;

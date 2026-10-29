@@ -30,6 +30,10 @@ make -C "$DIR/paso6_demand_paging_fault" modules > /dev/null
 echo -e "${CYAN}[*] Compilando módulo Paso 8 (kmod_secure)...${NC}"
 make -C "$DIR/paso8_secure_driver" modules > /dev/null
 
+echo -e "${CYAN}[*] Compilando Paso 9 (kmod_auditor) y Paso 10 (secure_vault)...${NC}"
+make -C "$DIR/paso9_kprobe_auditor" modules > /dev/null
+make -C "$DIR/paso10_secure_mmap" modules > /dev/null
+
 # 1. Cargar Paso 3 (copy_to_user)
 if lsmod | grep -q "kmod_copy_user"; then
     echo -e "${YELLOW}[i] kmod_copy_user ya estaba cargado.${NC}"
@@ -66,9 +70,27 @@ else
     sudo chmod 666 /dev/secure_mmap 2>/dev/null || true
 fi
 
+# 5. Paso 9: auditor global de mmap() con kprobes (Componente B del parcial)
+if lsmod | grep -q "kmod_auditor"; then
+    echo -e "${YELLOW}[i] kmod_auditor ya estaba cargado.${NC}"
+else
+    echo -e "${GREEN}[+] Cargando kmod_auditor.ko (lectura en /proc/mmap_audit)...${NC}"
+    sudo insmod "$DIR/paso9_kprobe_auditor/kmod_auditor.ko"
+fi
+
+# 6. Paso 10: boveda segura (UID autorizado = ALLOWED_UID, o el usuario que invoco sudo, o 1000)
+VAULT_UID="${ALLOWED_UID:-${SUDO_UID:-1000}}"
+if lsmod | grep -q "secure_vault"; then
+    echo -e "${YELLOW}[i] secure_vault ya estaba cargado.${NC}"
+else
+    echo -e "${GREEN}[+] Cargando secure_vault.ko (allowed_uid=${VAULT_UID})...${NC}"
+    sudo insmod "$DIR/paso10_secure_mmap/secure_vault.ko" allowed_uid="$VAULT_UID"
+    sudo chmod 666 /dev/secure_vault 2>/dev/null || true
+fi
+
 echo ""
 echo -e "${BLUE}${BOLD}=== ESTADO DE DISPOSITIVOS REGISTRADOS ===${NC}"
-ls -l /dev/demo_copy_user /dev/demo_mmap /dev/demo_demand_fault /dev/secure_mmap 2>/dev/null || true
+ls -l /dev/demo_copy_user /dev/demo_mmap /dev/demo_demand_fault /dev/secure_mmap /dev/secure_vault 2>/dev/null || true
 echo ""
 echo -e "${GREEN}${BOLD}¡Módulos cargados exitosamente! Puede ejecutar las pruebas:${NC}"
 echo -e "  - ${CYAN}./paso3_driver_copy_user/test_copy_user${NC}"
@@ -76,3 +98,5 @@ echo -e "  - ${CYAN}./paso4_driver_mmap_kernel/test_mmap${NC}"
 echo -e "  - ${CYAN}./paso6_demand_paging_fault/test_demand_paging${NC}"
 echo -e "  - ${CYAN}./paso8_secure_driver/test_secure${NC}"
 echo -e "  - ${CYAN}./paso8_secure_driver/attack_unauthorized_uid.sh${NC}"
+echo -e "  - ${CYAN}./paso10_secure_mmap/tests/run_tests.sh${NC}   (bateria del parcial; requiere allowed_uid=1000)"
+echo -e "  - ${CYAN}cat /proc/mmap_audit | head${NC}              (auditor global kprobes)"

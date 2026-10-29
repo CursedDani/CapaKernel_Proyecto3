@@ -1,0 +1,12 @@
+================ headers 6.19.10-300.fc44.x86_64 ================
+h1_sys_call_table          FALLA: ERROR: modpost: "sys_call_table" [h1_sys_call_table.ko] undefined!
+h2_kallsyms_lookup_name    FALLA: ERROR: modpost: "kallsyms_lookup_name" [h2_kallsyms_lookup_name.ko] undefined!
+h3_vm_flags_directo        FALLA: h3_vm_flags_directo.c:5:17: error: assignment of read-only member ‘vm_flags’
+h4_class_create_2args      FALLA: init.h:174:22: error: passing argument 1 of ‘class_create’ from incompatible pointer type [-Wincompatible-pointer-types]
+h6_kmap_atomic             COMPILA y ENLAZA
+================ headers 7.2.13-200.fc44.x86_64 ================
+h1_sys_call_table          FALLA: ERROR: modpost: "sys_call_table" [h1_sys_call_table.ko] undefined!
+h2_kallsyms_lookup_name    FALLA: ERROR: modpost: "kallsyms_lookup_name" [h2_kallsyms_lookup_name.ko] undefined!
+h3_vm_flags_directo        FALLA: h3_vm_flags_directo.c:5:17: error: assignment of read-only member ‘vm_flags’
+h4_class_create_2args      FALLA: init.h:174:22: error: passing argument 1 of ‘class_create’ from incompatible pointer type [-Wincompatible-pointer-types]
+h6_kmap_atomic             COMPILA y ENLAZA
