@@ -167,6 +167,16 @@ run_inspector() {
     pause
 }
 
+run_parcial_vm() {
+    print_header
+    show_card "PARCIAL 25%: SEGURIDAD EN CAPA KERNEL Y mmap (Pasos 9 y 10) EN UNA VM QEMU/KVM" \
+        "Probar la boveda segura /dev/secure_vault y el auditor kprobes sin riesgo de kernel panic en el host y sin root." \
+        "Compila los modulos con -Werror, arranca una VM desechable con el kernel del host, carga los modulos y ejecuta ataques (UID no autorizado, PROT_EXEC, MAP_PRIVATE, offset fuera de rango, carrera madvise, manipulacion de integridad)." \
+        "Evidencia PASS/FAIL, matriz antes/despues (Paso 4 vs Paso 10) y benchmark de overhead en docs/evidencia/."
+    ./vm/run_vm_tests.sh all
+    pause
+}
+
 load_all_modules() {
     print_header
     echo -e "${BOLD}--> CARGANDO TODOS LOS MÓDULOS DE KERNEL...${NC}"
@@ -205,6 +215,10 @@ case "$1" in
     --all|-a)
         check_build
         run_all_sequential
+        exit 0
+        ;;
+    vm|parcial)
+        run_parcial_vm
         exit 0
         ;;
     paso1|1)
@@ -283,6 +297,7 @@ while true; do
     echo -e "  ${CYAN}[6]${NC} Paso 6: Paginación por Demanda Real en Kernel (vm_ops->fault)"
     echo -e "  ${CYAN}[7]${NC} Paso 7: Comunicación Inter-Procesos (IPC) Ring Buffer Zero-Copy (13M msg/s)"
     echo -e "  ${CYAN}[8]${NC} Herramienta: Inspección de Tablas de Páginas de la MMU (pagemap)"
+    echo -e "  ${CYAN}[9]${NC} Parcial 25%: Boveda segura + auditor kprobes (Pasos 9-10) en VM QEMU/KVM"
     echo ""
     echo -e "  ${GREEN}[A]${NC} Ejecutar Demostración Completa Guiada (Todos los pasos)"
     echo -e "  ${YELLOW}[L]${NC} Cargar todos los módulos en el kernel (sudo insmod)"
@@ -301,6 +316,7 @@ while true; do
         6) run_paso6 ;;
         7) run_paso7 ;;
         8) run_inspector ;;
+        9) run_parcial_vm ;;
         [aA]) run_all_sequential ;;
         [lL]) load_all_modules ;;
         [uU]) unload_all_modules ;;

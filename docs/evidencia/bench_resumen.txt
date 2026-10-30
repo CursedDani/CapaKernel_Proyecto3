@@ -1,0 +1,11 @@
+# Benchmark: mediana entre 6 arranques de VM (rango min..max entre arranques); cada arranque = 30 corridas x 2000 iteraciones
+# baseline = Paso 4 (remap_pfn_range, sin proteccion) | vault = paso10 secure_vault
+metrica                baseline (ns)               vault (ns) vault/base
+mmap_ns         6834.7 ( 6731.3.. 6989.8)     2836.1 ( 2759.6.. 2863.9)     0.41x
+touch_ns         579.9 (  567.0..  596.0)     6716.7 ( 6610.5.. 6932.1)    11.58x
+fault_ns         145.0 (  141.8..  149.0)     1679.2 ( 1652.6.. 1733.0)    11.58x
+munmap_ns       3075.6 ( 3009.6.. 3112.5)     3324.3 ( 3246.3.. 3562.4)     1.08x
+total_ns       10490.6 (10308.0..10682.0)    12893.7 (12616.3..13266.0)     1.23x
+session_ns     15535.1 (15286.4..15965.1)    33175.2 (32662.6..34007.8)     2.14x
+access_ns          0.5 (    0.5..    0.5)        0.5 (    0.4..    0.5)     1.00x
+minflt             0.0 (    0.0..    0.0)        4.0 (    4.0..    4.0)      nanx

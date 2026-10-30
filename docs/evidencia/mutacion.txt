@@ -1,0 +1,27 @@
+M1  sin validacion de pgoff/longitud (control 5)                       PASS=67  FAIL=5  DETECTADO
+        [FAIL] 5 paginas (> boveda) -> EINVAL (errno=0)
+        [FAIL] REGRESION Paso 4: offset=1 pagina + longitud completa -> EINVAL (errno=0)
+        [FAIL] offset = fin exacto de la boveda -> EINVAL (errno=0)
+M2  sin limpiar VM_MAYEXEC: mprotect(PROT_EXEC) posterior (control 2)  PASS=70  FAIL=2  DETECTADO
+        [FAIL] mprotect(PROT_EXEC) posterior -> EACCES (VM_MAYEXEC limpiado) (errno=13)
+        [FAIL] VmFlags NO contiene 'me' (VM_MAYEXEC limpiado)
+M3  mmap sin re-verificar identidad: fd heredado (control 1)           PASS=70  FAIL=2  DETECTADO
+        [FAIL] hijo con fd heredado y UID 65534: mmap -> EPERM e ioctl -> EPERM (rc=10)
+        [FAIL] auditoria: mmap_denied_uid incremento en 1 (0 -> 0)
+M4  permite MAP_PRIVATE: vector COW (control 4)                        PASS=69  FAIL=3  DETECTADO
+        [FAIL] boveda: O_RDONLY + PROT_WRITE + MAP_PRIVATE -> EACCES (errno=0)
+        [FAIL] boveda: incluso MAP_PRIVATE de solo lectura -> EACCES (errno=0)
+        [FAIL] auditoria: 2 intentos MAP_PRIVATE contados (0 -> 0)
+M5  sin VM_DONTCOPY/DONTDUMP/DONTEXPAND (control 6)                    PASS=67  FAIL=5  DETECTADO
+        [FAIL] VmFlags contiene 'dc' (VM_DONTCOPY)
+        [FAIL] VmFlags contiene 'dd' (VM_DONTDUMP)
+        [FAIL] VmFlags contiene 'de' (VM_DONTEXPAND)
+M6  fd solo-lectura sin limpiar VM_WRITE|VM_MAYWRITE (control 3)       PASS=72  FAIL=0  SOBREVIVE
+M7  sin verificar el HMAC (control 9)                                  PASS=69  FAIL=3  DETECTADO
+        [FAIL] despues del ataque: VERIFY detecta exactamente 1 pagina corrupta (bad=0)
+        [FAIL] leer la pagina manipulada produce SIGBUS, NO datos corruptos (rc=0)
+        [FAIL] auditoria: fallos de integridad contados (0 -> 0)
+M8  VM_SHARED en vez de VM_MAYSHARE (indicacion original del plan)     PASS=56  FAIL=6  DETECTADO
+        [FAIL] reabrir O_RDONLY + mmap(PROT_READ) con offset de 1 pagina
+        [FAIL] O_RDONLY + MAP_SHARED + PROT_READ permitido
+        [FAIL] mapeos RO (pagina 0) y RW (pagina 2)
