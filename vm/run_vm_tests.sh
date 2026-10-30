@@ -79,13 +79,20 @@ add_file() { # origen destino
 
 boot_vm() { # nombre-del-log ; usa $IR y $WORK/plan.txt
     local name="$1"
+    local qemu_accel=("-machine" "accel=tcg")
+    if [ -e /dev/kvm ] && [ -w /dev/kvm ]; then
+        qemu_accel=(-enable-kvm -cpu host)
+    else
+        echo "[*] KVM no disponible; usando emulacion por software (tcg)" >&2
+    fi
+
     cp "$WORK/plan.txt" "$IR/plan.txt"
     add_file "$WORK/init" /init     # incluye libc/ld.so que necesita el propio init
     mkdir -p "$IR"/{proc,sys,dev,tmp}
     (cd "$IR" && find . | cpio -o -H newc --quiet | gzip -1 > "$WORK/initrd.gz")
     echo "[*] Arrancando VM ($KVER) -> $OUT/$name.log"
     # -nic none evita el arranque PXE; panic=-1 reinicia (y -no-reboot apaga) ante un panic
-    timeout 600 qemu-system-x86_64 -enable-kvm -cpu host -smp "$SMP" -m "$MEM" \
+    timeout 600 qemu-system-x86_64 "${qemu_accel[@]}" -smp "$SMP" -m "$MEM" \
         -nographic -nic none -no-reboot \
         -kernel "/boot/vmlinuz-$KVER" -initrd "$WORK/initrd.gz" \
         -append "console=ttyS0 panic=-1 quiet loglevel=0" 2>&1 \
