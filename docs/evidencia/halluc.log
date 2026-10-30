@@ -1,8 +1,2 @@
-SeaBIOS (version 1.17.0-10.fc44)
-[init] insmod /h5_cr0_wp.ko OK ()
-[dmesg] <6>[    0.543848] h5: CR0 antes=0x80050033 despues_de_apagar_WP=0x80050033 => WP SIGUE ENCENDIDO (CR pinning: la tecnica ya no funciona)
-[dmesg] <4>[    0.543667] CR0 WP bit went missing!?
-[dmesg] <4>[    0.543720] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[dmesg] <6>[    0.543848] h5: CR0 antes=0x80050033 despues_de_apagar_WP=0x80050033 => WP SIGUE ENCENDIDO (CR pinning: la tecnica ya no funciona)
-[init] rmmod h5_cr0_wp OK
-[init] plan terminado, apagando
+qemu-system-x86_64: Could not access KVM kernel module: No such file or directory
+qemu-system-x86_64: failed to initialize kvm: No such file or directory
