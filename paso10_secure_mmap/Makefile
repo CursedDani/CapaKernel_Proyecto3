@@ -17,7 +17,10 @@ secure_vault-y := kmod_secure_mmap.o secure_crypto.o secure_audit.o
 # -Werror: el parcial exige "clean build". Falla la compilacion ante cualquier warning.
 ccflags-y += -Wall -Wextra -Werror -Wno-unused-parameter -Wno-missing-field-initializers
 
-KDIR ?= /lib/modules/$(shell uname -r)/build
+# Fuera de kbuild: KDIR, omitir si faltan headers y soporte de rutas con espacios
+ifeq ($(KERNELRELEASE),)
+include ../scripts/kbuild.mk
+endif
 PWD  := $(CURDIR)
 ALLOWED_UID ?= 1000
 
@@ -26,7 +29,7 @@ ALLOWED_UID ?= 1000
 all: modules tests bench
 
 modules:
-	$(MAKE) -C $(KDIR) M=$(PWD) modules
+	$(call kbuild_run,modules)
 
 tests:
 	$(MAKE) -C tests
@@ -35,7 +38,7 @@ bench:
 	$(MAKE) -C bench
 
 clean:
-	-$(MAKE) -C $(KDIR) M=$(PWD) clean
+	rm -f $(KBUILD_ARTIFACTS)
 	$(MAKE) -C tests clean
 	$(MAKE) -C bench clean
 

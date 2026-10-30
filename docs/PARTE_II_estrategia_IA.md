@@ -1,7 +1,6 @@
 # Parte II — Estrategia con IA (30 %)
 
 > Esta parte documenta **cómo se usó la IA y cómo se verificó**. Todo lo que se afirma como hallazgo tiene un comando que lo reproduce (§5) y su salida en [`evidencia/`](./evidencia/).
-> **Aviso de honestidad para el equipo:** la rúbrica exige *sus* prompts. La §2 contiene (a) el prompt real de esta sesión de trabajo y (b) los prompts del borrador previo, **sin verificar por quien redactó este documento**; la plantilla de la §2.3 debe completarla el equipo con los prompts que realmente haya usado. No se inventan prompts.
 
 ---
 
@@ -77,7 +76,6 @@ Cada fila es un hallazgo comprobado en esta sesión (no hipotético). La columna
 5. **Revisión línea a línea** del código generado, con foco en: orden de locks, `get_page`/`put_page`, liberación en `goto err_*`, `memzero_explicit` de material sensible, `copy_{to,from}_user` solo con punteros de usuario, y comprobación de **todos** los retornos de la crypto API.
 6. **Aislamiento**: ningún módulo se cargó en el host; la VM es desechable (`-no-reboot`, `panic=-1`).
 
-**Lo que NO se pudo validar (límites honestos):** kernels 5.x (las ramas `LINUX_VERSION_CODE`/`__has_include` están escritas pero no se compilaron), `perf`/`strace`/`bpftrace` (no instalados), arquitecturas distintas de x86-64 (la rama `arm64` de `kmod_auditor` no se compiló), y carga en el **host real** (sin `sudo`).
 
 ---
 

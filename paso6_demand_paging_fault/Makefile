@@ -1,6 +1,9 @@
 obj-m += kmod_demand_paging.o
 
-KDIR ?= /lib/modules/$(shell uname -r)/build
+# Fuera de kbuild: KDIR, omitir si faltan headers y soporte de rutas con espacios
+ifeq ($(KERNELRELEASE),)
+include ../scripts/kbuild.mk
+endif
 PWD := $(shell pwd)
 
 USER_TARGET = test_demand_paging
@@ -10,13 +13,13 @@ CFLAGS ?= -Wall -Wextra -O2 -g
 all: modules $(USER_TARGET)
 
 modules:
-	$(MAKE) -C $(KDIR) M=$(PWD) modules
+	$(call kbuild_run,modules)
 
 $(USER_TARGET): test_demand_paging.c
 	$(CC) $(CFLAGS) -o $@ test_demand_paging.c
 
 clean:
-	$(MAKE) -C $(KDIR) M=$(PWD) clean
+	rm -f $(KBUILD_ARTIFACTS)
 	rm -f $(USER_TARGET)
 
 load:

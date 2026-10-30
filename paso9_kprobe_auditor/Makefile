@@ -8,7 +8,10 @@
 obj-m += kmod_auditor.o
 ccflags-y += -Wall -Wextra -Werror -Wno-unused-parameter
 
-KDIR ?= /lib/modules/$(shell uname -r)/build
+# Fuera de kbuild: KDIR, omitir si faltan headers y soporte de rutas con espacios
+ifeq ($(KERNELRELEASE),)
+include ../scripts/kbuild.mk
+endif
 PWD  := $(CURDIR)
 CC ?= gcc
 CFLAGS ?= -O2 -g -Wall -Wextra -Werror
@@ -16,13 +19,13 @@ CFLAGS ?= -O2 -g -Wall -Wextra -Werror
 all: modules mmap_probe
 
 modules:
-	$(MAKE) -C $(KDIR) M=$(PWD) modules
+	$(call kbuild_run,modules)
 
 mmap_probe: mmap_probe.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	-$(MAKE) -C $(KDIR) M=$(PWD) clean
+	rm -f $(KBUILD_ARTIFACTS)
 	rm -f mmap_probe
 
 load: modules

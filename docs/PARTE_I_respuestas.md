@@ -132,7 +132,7 @@ La diferencia vive en `vma->vm_flags`: **`VM_MAYSHARE`** (el usuario pidió `MAP
 2. **Ya no se "olvida" la intención de escritura.** El parche de 2016 (`FOLL_COW`) y, después, el rediseño con **`PageAnonExclusive`** (`[H]`) y `FAULT_FLAG_UNSHARE` (`[H]`) hacen que GUP **exija una página exclusiva escribible** antes de escribir; si el COW se perdió, vuelve a fallar con intención de escritura en vez de caer a la página del page cache.
 3. **Refcount/pin.** GUP fija la página (`FOLL_PIN`) tras verificar la PTE, de modo que el `zap` posterior no puede cambiar *qué* página se está escribiendo.
 
-> **Honestidad:** `test_race_madvise` **no** prueba el COW anónimo del kernel (que ya está parcheado) sino que el *mismo patrón de ataque* (hilo de escritura forzada vía `/proc/self/mem` + hilo `MADV_DONTNEED`) **no tiene efecto contra la bóveda**: 1.17 M intentos de escritura forzada, **0 éxitos**, contenido intacto y `VERIFY`=0 páginas corruptas `[E]`. Se debe a (i) no existir mapeo privado que descartar, (ii) `VM_MAYWRITE` limpio en el mapeo RO, (iii) datos propios del módulo que sobreviven al `zap`.
+> **Honestidad:** `test_race_madvise` **no** prueba el COW anónimo del kernel (que ya está parcheado) sino que el *mismo patrón de ataque* (hilo de escritura forzada vía `/proc/self/mem` + hilo `MADV_DONTNEED`) **no tiene efecto contra la bóveda**: 717 778 intentos de escritura forzada, **0 éxitos**, contenido intacto y `VERIFY`=0 páginas corruptas `[E]`. Se debe a (i) no existir mapeo privado que descartar, (ii) `VM_MAYWRITE` limpio en el mapeo RO, (iii) datos propios del módulo que sobreviven al `zap`.
 
 ---
 

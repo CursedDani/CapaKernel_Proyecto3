@@ -27,7 +27,7 @@ Memoria (`mmap`)**.
   `page_mkwrite` y auditoría; con 10 programas de ataque/defensa, benchmark y verificación de afirmaciones de IA.
 - **Ejecución segura sin root:** `vm/run_vm_tests.sh all` (o `make run-vm`, o `./run.sh vm`) arranca una VM QEMU/KVM desechable.
 
-> ⚠ kbuild **no soporta espacios en la ruta**; clone/copie el repo a una ruta sin espacios para `make` (el script de VM lo resuelve solo).
+> ℹ `make` funciona aunque la ruta tenga espacios (compila en una copia temporal) y, si faltan los headers del kernel, omite los módulos con un aviso en lugar de fallar (`scripts/kbuild.mk`).
 
 ---
 

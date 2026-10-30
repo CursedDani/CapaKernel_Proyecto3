@@ -36,8 +36,8 @@
 [PASS] hijo con fd heredado y UID 65534: mmap -> EPERM e ioctl -> EPERM   (test_fd_inherit)
 [PASS] mmap(PROT_READ|PROT_EXEC) -> EACCES ; mprotect(PROT_EXEC) posterior -> EACCES
 [PASS] REGRESION Paso 4: offset=1 pagina + longitud completa -> EINVAL
-[PASS] NINGUNA escritura forzada tuvo exito durante la carrera (exitos=0)   (1 175 841 intentos)
-cifrado en reposo (pagina 0, 32 B): 27a4c9c89484e000e3f161cadae2193812bc9aea6a6450397b0386f7870af912
+[PASS] NINGUNA escritura forzada tuvo exito durante la carrera (exitos=0)   (717 778 intentos)
+cifrado en reposo (pagina 0, 32 B): 973608a879d1452f8d4396b5950b553927bd63a53f0acc1a04cb6bd1e1e7aa6f
 [PASS] leer la pagina manipulada produce SIGBUS, NO datos corruptos
 ```
 
